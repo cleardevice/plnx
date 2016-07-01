@@ -5,6 +5,10 @@ export default {
     private:  "https://poloniex.com/tradingApi",
     push:     "wss://api.poloniex.com"
   },
+  limits: {
+    queryCount: 5,
+    timePeriod: 1000
+  },
   commands: {
     returnTicker: {
       type:   "public",

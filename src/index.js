@@ -7,11 +7,14 @@ import debug        from "debug";
 import request      from "request";
 import autobahn     from "autobahn";
 import _            from "lodash";
+import rateLimit    from "function-rate-limit";
 
 import config       from "./config";
 import nonce        from "./nonce";
 
 let dbg = debug(pkg.name);
+
+var limitedRequest = rateLimit(config.limits.queryCount, config.limits.timePeriod, request);
 
 for (let command in config.commands) {
   let cfg = config.commands[command];
@@ -80,7 +83,7 @@ for (let command in config.commands) {
 
     dbg({ key, secret, opt, is_private, ropt });
 
-    request(ropt, (err, res, data) => {
+    limitedRequest(ropt, (err, res, data) => {
       if (err)
         cb(err);
       else if (res.statusCode !== 200)
